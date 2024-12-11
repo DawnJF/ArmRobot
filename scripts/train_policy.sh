@@ -1,8 +1,9 @@
 # Examples:
 
-#   bash scripts/train_policy.sh idp3 gr1_dex-3d 0913_example
+# bash scripts/train_policy.sh idp3 gr1_dex-3d 1211_9
 
-dataset_path=/storage/liujinxin/code/ArmRobot/training_data_example
+# dataset_path=/storage/liujinxin/code/ArmRobot/training_data_example # dim: 32
+dataset_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1211
 
 
 DEBUG=False
@@ -15,7 +16,7 @@ config_name=${alg_name}
 addition_info=${3}
 seed=0
 exp_name=${task_name}-${alg_name}-${addition_info}
-run_dir="data/outputs/${exp_name}_seed${seed}"
+run_dir="outputs/${exp_name}_seed${seed}"
 
 gpu_id=0
 echo -e "\033[33mgpu id (to use): ${gpu_id}\033[0m"

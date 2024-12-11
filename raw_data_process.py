@@ -1,6 +1,7 @@
 import json, os, zarr
 import numpy as np
 
+
 def run(data_path, save_path):
 
     colored_clouds = []
@@ -14,16 +15,19 @@ def run(data_path, save_path):
         for folder_name in folders_name
     ]
 
+    folder = data_path.split("/")[-1]
+
     for index, json_file in enumerate(json_files):
         with open(json_file, "r") as file:
             data = json.load(file)
 
         for item in data:
-            colored_cloud = np.load()
+            file = os.path.join(data_path, item["point_cloud"].split(folder + "/")[1])
+            colored_cloud = np.load(file)
             colored_clouds.append(colored_cloud)
 
             states.append(item["pose"])
-            actions.append(item["pose"]) # TODO
+            actions.append(item["pose"])  # TODO
 
         episode_ends.append(len(colored_clouds))
 
@@ -43,9 +47,11 @@ def run(data_path, save_path):
         data_group = zf.create_group("meta")
         data_group.create_dataset("episode_ends", data=episode_ends, dtype="int64")
 
+
 if __name__ == "__main__":
 
-    data_path = "/storage/liujinxin/code/tram/iDP3/data/raw_data/1205_crop/"
-    save_path = "/storage/liujinxin/code/tram/iDP3/data/train_data/corn1205"
+    data_path = "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1211"
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/1211"
 
     run(data_path, save_path)
+    print("done")

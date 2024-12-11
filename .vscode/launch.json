@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "train",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/Improved-3D-Diffusion-Policy/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--config-name",
+                "idp3.yaml",
+                "task=gr1_dex-3d",
+                "hydra.run.dir=output/test",
+                "task.dataset.zarr_path=/storage/liujinxin/code/iDP3/data/train_data/corn"
+            ]
+        }
+    ]
+}

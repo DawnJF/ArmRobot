@@ -7,7 +7,6 @@ ckpts/
 
 raw_data/
 timm/
-.vscode/
 
 deploy_dir/
 deploy_vis_dir/

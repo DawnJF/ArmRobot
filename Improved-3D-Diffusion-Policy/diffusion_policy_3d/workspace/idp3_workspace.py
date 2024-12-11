@@ -127,6 +127,7 @@ class iDP3Workspace(BaseWorkspace):
         cprint(f"[WandB] name: {cfg.logging.name}", "yellow")
         cprint("-----------------------------", "yellow")
         # configure logging
+        wandb.login(key="f3ff179b6f827f5e96753a72451d069bd58bd413")
         wandb_run = wandb.init(
             dir=str(self.output_dir),
             config=OmegaConf.to_container(cfg, resolve=True),

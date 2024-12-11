@@ -6,6 +6,7 @@ __pycache__/
 ckpts/
 
 raw_data/
+dataset/
 timm/
 
 deploy_dir/

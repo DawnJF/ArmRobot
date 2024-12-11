@@ -20,7 +20,7 @@ os.environ["WANDB_SILENT"] = "True"
 OmegaConf.register_new_resolver("eval", eval, replace=True)
 
 
-from diffusion_policy_3d.common.multi_realsense import MultiRealSense
+from observation.real_sense_camera import MultiRealSense
 
 zenoh_path = "/home/gr1p24ap0049/projects/gr1-dex-real/teleop-zenoh"
 sys.path.append(zenoh_path)
@@ -45,8 +45,6 @@ class GR1DexEnvInference:
         device="gpu",
         use_point_cloud=True,
         use_image=True,
-        img_size=224,
-        num_points=4096,
         use_waist=False,
     ):
 
@@ -57,11 +55,7 @@ class GR1DexEnvInference:
         self.use_waist = use_waist
 
         # camera
-        self.camera = MultiRealSense(
-            use_front_cam=True,  # by default we use single cam. but we also support multi-cam
-            front_num_points=num_points,
-            img_size=img_size,
-        )
+        self.camera = MultiRealSense()
 
         # horizon
         self.obs_horizon = obs_horizon
@@ -235,8 +229,6 @@ def main(cfg: OmegaConf):
     # task = "pour"
     roll_out_length = roll_out_length_dict[task]
 
-    img_size = 224
-    num_points = 4096
     use_waist = True
     first_init = True
     record_data = True
@@ -247,8 +239,6 @@ def main(cfg: OmegaConf):
         device="cpu",
         use_point_cloud=use_point_cloud,
         use_image=use_image,
-        img_size=img_size,
-        num_points=num_points,
         use_waist=use_waist,
     )
 

@@ -50,6 +50,3 @@ python train.py --config-name=${config_name}.yaml \
                             checkpoint.save_ckpt=${save_ckpt} \
                             task.dataset.zarr_path=$dataset_path 
 
-
-
-                                

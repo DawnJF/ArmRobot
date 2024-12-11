@@ -1,31 +1,3 @@
-# [Generalizable Humanoid Manipulation with Improved 3D Diffusion Policies](https://humanoid-manipulation.github.io/)
-
-Our project is **fully open-sourced**. We separate them into two repos: [Learning & Deployment of iDP3](https://github.com/YanjieZe/Improved-3D-Diffusion-Policy) and [Humanoid Teleoperation](https://github.com/YanjieZe/Humanoid-Teleoperation). This repo is for training and deployment of iDP3.
-
-
-https://github.com/user-attachments/assets/97f6ff8c-45b3-497a-bb66-dd8b24e973b4
-
-
-# News
-
-- **2024-11-04** Full data and checkpoints (all 3 tasks) are released in [Google Drive](https://drive.google.com/drive/folders/1f5Ln_d14OQ5eSjPDGnD7T4KQpacMhgCB?usp=sharing).
-- **2024-10-13** Release the full code for learning/teleoperation. Have a try!
-
-
-# Training & Deployment of iDP3
-
-This repo is for training and deployment of iDP3. We provide the training data example in this [Google Drive](https://drive.google.com/file/d/1c-rDOe1CcJM8iUuT1ecXKjDYAn-afy2e/view?usp=sharing), so that you could try to train the model without collecting data. The full data and the checkpoints are available in this [Google Drive](https://drive.google.com/drive/folders/1f5Ln_d14OQ5eSjPDGnD7T4KQpacMhgCB?usp=sharing).
-
-More info:
-- For the training machine, we use a local computer with an Nvidia RTX 4090 (24G memory). 
-- For the deployment machine, we use the cpu of the onboard computer in Fourier GR1.
-- We use [RealSense L515](https://www.intelrealsense.com/lidar-camera-l515/) for the depth camera. *Note that RealSense D435 provides very imprecise depth data and is not recommended for training the 3D policy.*
-
-
-
-iDP3 is a general 3D visuomotor policy for any robot. You could use iDP3 without camera calibration and point cloud segmentation. Please check our RealSense wrapper for the proposed egocentric 3D visual representation.
-
-
 
 
 ## Installation
@@ -76,27 +48,16 @@ Install conda env and packages for both learning and deployment machines:
 
 ## Usage
 
-We provide the training data example in [Google Drive](https://drive.google.com/file/d/1c-rDOe1CcJM8iUuT1ecXKjDYAn-afy2e/view?usp=sharing), so that you could try to train the model without collecting data. Download it and unzip it. Then specify the dataset path in `scripts/train_policy.sh`.
-
-For example,  I put the dataset in `/home/ze/projects/Improved-3D-Diffusion-Policy/training_data_example`, and I set `dataset_path=/home/ze/projects/Improved-3D-Diffusion-Policy/training_data_example` in `scripts/train_policy.sh`.
-
-Then you could train the policy and deploy it.
-
 **Train.** The script to train policy:
 
     # 3d policy
     bash scripts/train_policy.sh idp3 gr1_dex-3d 0913_example
-
-    # 2d policy
-    bash scripts/train_policy.sh dp_224x224_r3m gr1_dex-image 0913_example
 
 **Deploy.** After you have trained the policy, deploy the policy with the following command. For missing packages such as `communication.py`, see another [our repo](https://github.com/YanjieZe/Humanoid-Teleoperation/tree/main/humanoid_teleoperation/teleop-zenoh)
 
     # 3d policy
     bash scripts/deploy_policy.sh idp3 gr1_dex-3d 0913_example
 
-    # 2d policy
-    bash scripts/deploy_policy.sh dp_224x224_r3m gr1_dex-image 0913_example
 
 Note that you may not run the deployment code without a robot (differet robots have different API). The code we provide is more like an example to show how to deploy the policy. You could modify the code to fit your own robot (any robot with a camera is OK).
 
@@ -105,20 +66,3 @@ Note that you may not run the deployment code without a robot (differet robots h
     bash scripts/vis_dataset.sh
 
 You can specify `vis_cloud=1` to render the point cloud as in the paper.
-
-
-## BibTeX
-
-Please consider citing our paper if you find this repo useful:
-```
-@article{ze2024humanoid_manipulation,
-  title   = {Generalizable Humanoid Manipulation with Improved 3D Diffusion Policies},
-  author  = {Yanjie Ze and Zixuan Chen and Wenhao Wang and Tianyi Chen and Xialin He and Ying Yuan and Xue Bin Peng and Jiajun Wu},
-  year    = {2024},
-  journal = {arXiv preprint arXiv:2410.10803}
-}
-```
-
-## Acknowledgement
-
-We thank the authors of the following repos for their great work: [3D Diffusion Policy](https://github.com/YanjieZe/3D-Diffusion-Policy), [Diffusion Policy](https://github.com/columbia-ai-robotics/diffusion_policy), [VisionProTeleop](https://github.com/Improbable-AI/VisionProTeleop), [Open-TeleVision](https://github.com/OpenTeleVision/TeleVision). 

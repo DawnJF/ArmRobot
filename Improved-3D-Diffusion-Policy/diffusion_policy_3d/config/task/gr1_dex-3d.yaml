@@ -7,10 +7,10 @@ shape_meta: &shape_meta
       shape: [4096, 6]
       type: point_cloud
     agent_pos:
-      shape: [32]
+      shape: [8]
       type: low_dim
   action:
-    shape: [25]
+    shape: [8]
 
 
 dataset:

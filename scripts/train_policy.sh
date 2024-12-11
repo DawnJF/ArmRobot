@@ -7,8 +7,9 @@ dataset_path=/home/ze/projects/Improved-3D-Diffusion-Policy/training_data_exampl
 
 
 DEBUG=False
-wandb_mode=offline
+wandb_mode=online #online #offline
 
+wandb login --key f3ff179b6f827f5e96753a72451d069bd58bd413
 
 alg_name=${1}
 task_name=${2}

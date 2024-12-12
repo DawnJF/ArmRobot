@@ -4,7 +4,7 @@ import cv2
 # use line-buffering for both stdout and stderr
 sys.stdout = open(sys.stdout.fileno(), mode="w", buffering=1)
 sys.stderr = open(sys.stderr.fileno(), mode="w", buffering=1)
-
+sys.path.insert(0, "/home/robot/ArmRobot")
 from hardware.arm_robot import ArmRobot
 import hydra
 import time
@@ -70,7 +70,7 @@ class Inference:
     def step(self, action):
         print("step: ", action.shape)
 
-        self.robot.run(action[:, 3 + 5 + 5 : 3 + 5 + 5 + 8])
+        self.robot.run(action)
 
         action_list = [act for act in action]
         for action_id in range(self.action_horizon):
@@ -82,13 +82,8 @@ class Inference:
             self.depth_array.append(cam_dict["depth"])
             self.cloud_array.append(cam_dict["point_cloud"])
 
-            # TODO
-            env_qpos = np.zeros((1, 32))
-            env_qpos[0, 6 + 5 + 2 + 5 + 2 : 6 + 5 + 2 + 5 + 2 + 8] = (
-                self.robot.get_state()
-            )
 
-            self.env_qpos_array.append(env_qpos[0])
+            self.env_qpos_array.append(self.robot.get_state())
 
         obs_dict = self.construct_obs(
             self.env_qpos_array[-self.obs_horizon :],
@@ -119,17 +114,17 @@ class Inference:
         self.depth_array.append(cam_dict["depth"])
         self.cloud_array.append(cam_dict["point_cloud"])
 
-        cv2.imwrite(
-            "/media/robot/2CCF4D6BBC2D923E/mpz/iDP3/Improved-3D-Diffusion-Policy/test.png",
-            self.color_array,
-        )
+        # cv2.imwrite(
+        #     "/media/robot/2CCF4D6BBC2D923E/mpz/iDP3/Improved-3D-Diffusion-Policy/test.png",
+        #     self.color_array,
+        # )
 
-        env_qpos = np.zeros((1, 32))
-        env_qpos[0, 6 + 5 + 2 + 5 + 2 : 6 + 5 + 2 + 5 + 2 + 8] = self.robot.get_state()
-        self.env_qpos_array.append(env_qpos)
+        # env_qpos = np.zeros((1, 8))
+        # env_qpos[0, 6 + 5 + 2 + 5 + 2 : 6 + 5 + 
+        self.env_qpos_array.append(self.robot.get_state())
 
         obs_dict = self.construct_obs(
-            [self.env_qpos_array[-1][0]] * self.obs_horizon,
+            [self.env_qpos_array[-1]] * self.obs_horizon,
             [self.cloud_array[-1]] * self.obs_horizon,
         )
 
@@ -172,7 +167,17 @@ def main(cfg: OmegaConf):
 
     robot = ArmRobot()
 
-    robot.init_action()
+    action = [
+        -0.18980697676771513,
+        -0.3827291399992533,
+        0.31114132703422326,
+        -0.417985318626756,
+        -0.9083933376685246,
+        0.008868446494732254,
+        0.005582844140526736,
+        0.0,
+    ]
+    robot.init_action(action)
 
     env = Inference(
         robot=robot,

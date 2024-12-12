@@ -61,6 +61,7 @@ def create_colored_point_cloud(
     colored_cloud = np.hstack([cloud, color.astype(np.float32)])
     if use_grid_sampling:
         colored_cloud = grid_sample_pcd(colored_cloud, grid_size=0.005)
+        # colored_cloud = grid_sample_pcd(colored_cloud, grid_size=0.015)
 
     if num_points > colored_cloud.shape[0]:
         num_pad = num_points - colored_cloud.shape[0]

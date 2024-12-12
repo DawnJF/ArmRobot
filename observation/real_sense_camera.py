@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import cv2
+import sys
 import numpy as np
 from collections import deque
 import pyrealsense2 as rs
 from multiprocessing import Process, Manager
 import time
 import multiprocessing
+
+sys.path.insert(0, "/home/robot/ArmRobot")
 from observation.depth_image_process import process_depth_image
 
 multiprocessing.set_start_method("fork")
@@ -186,6 +189,7 @@ class MultiRealSense(object):
         self,
         front_cam_idx=0,
     ):
+        print("==== MultiRealSense ====")
 
         self.devices = get_realsense_id()
 
@@ -250,6 +254,36 @@ def show_depth(depth):
 
     cv2.waitKey(1)
 
+def show_point_cloud(point_cloud):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
+    # 假设你的点云数据在 point_cloud 变量中
+    # point_cloud 的形状为 (4096, 6)，前 3 列是坐标，后 3 列是颜色（可选）
+    # point_cloud = np.random.rand(4096, 6)  # 示例随机数据
+
+    # 提取点云坐标
+    x, y, z = point_cloud[:, 0], point_cloud[:, 1], point_cloud[:, 2]
+
+    # 提取颜色信息（如果有）
+    if point_cloud.shape[1] == 6:
+        colors = point_cloud[:, 3:6]
+    else:
+        colors = None
+
+    # 可视化点云
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+    sc = ax.scatter(x, y, z, s=1, cmap='viridis')  # s=1 是点的大小
+
+    # 设置轴标签
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    plt.colorbar(sc, label='Color') if colors is not None else None
+    plt.show()
 
 def show_img(img):
 
@@ -267,9 +301,11 @@ if __name__ == "__main__":
         out = cam()
         print(out.keys())
         if out["color"] is None:
+            time.sleep(0.2)
             continue
         print("color: ", out["color"].shape)
         print("depth: ", out["depth"].shape)
+        print("point_cloud: ", out["point_cloud"].shape)
 
         # imageio.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/color.png', out['color'])
         # imageio.imwrite(f'color_right.png', out['right_color'])
@@ -277,7 +313,8 @@ if __name__ == "__main__":
         # imageio.imwrite(f'depth_front.png', out['right_front'])
         # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/color.png', out['color'])
         # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/depth.png', out['depth'])
-        show_depth(out["depth"])
+        # show_depth(out["depth"])
+        show_point_cloud(out["point_cloud"])
         # show_img(out["color"])
         # plt.savefig("front_depth.png")
         # import visualizer

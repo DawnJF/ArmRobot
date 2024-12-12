@@ -318,6 +318,7 @@ class iDP3Workspace(BaseWorkspace):
         tag = "latest"
         # tag = "best"
         lastest_ckpt_path = self.get_checkpoint_path(tag=tag)
+        print(f"====== get_model {lastest_ckpt_path.is_file()}")
 
         if lastest_ckpt_path.is_file():
             cprint(f"Resuming from checkpoint {lastest_ckpt_path}", "magenta")

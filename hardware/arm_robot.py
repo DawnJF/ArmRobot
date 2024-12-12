@@ -1,15 +1,70 @@
-from utils import axis_to_euler, axis_to_quat, quat_to_axis, euler_to_axis
 from rtde_control import RTDEControlInterface
 from rtde_receive import RTDEReceiveInterface
+import sys
+sys.path.insert(0,"/home/robot/UR_Robot_Arm_Show/tele_ws/src/tele_ctrl_jeff/scripts")
 from robotiq_gripper import RobotiqGripper
 import time
 import numpy as np
+from scipy.spatial.transform import Rotation as R
+
+
+def axis_to_euler(axis_angle):
+    """
+    @input : rx,ry,rz - [axis angle] | array
+    @output : rx,ty,tz - [euler] | array
+    """
+    theta = np.linalg.norm(axis_angle)
+    axis = axis_angle / theta
+    half_theta = theta / 2
+    q_w = np.cos(half_theta)
+    q_xyz = axis * np.sin(half_theta)
+    quat = np.array([q_xyz[0], q_xyz[1], q_xyz[2], q_w])  # [x,y,z,w]
+    rotation = R.from_quat(quat)  # [x,y,z,w]
+    euler = rotation.as_euler("xyz", degrees=False)
+    return euler
+
+
+def axis_to_quat(axis_angle):
+    """
+    @input : rx,ry,rz - [axis angle] | array
+    @output : qx,qy,qz,qw - [quat] | array
+    """
+    theta = np.linalg.norm(axis_angle)
+    axis = axis_angle / theta
+    half_theta = theta / 2
+    q_w = np.cos(half_theta)
+    q_xyz = axis * np.sin(half_theta)
+    quat = np.array([q_xyz[0], q_xyz[1], q_xyz[2], q_w])  # [x,y,z,w]
+    return quat
+
+
+def euler_to_axis(euler_angles):
+    """
+    Converts Euler angles to axis-angle representation.
+    @input : rx, ry, rz - [euler angles] | array
+    @output : rx, ry, rz - [axis angle] | array
+    """
+    rotation = R.from_euler("xyz", euler_angles, degrees=False)
+    axis_angle = rotation.as_rotvec()
+    return axis_angle
+
+
+def quat_to_axis(quaternion):
+    """
+    Converts quaternion to axis-angle representation.
+    @input : qx, qy, qz, qw - [quaternion] | array
+    @output : rx, ry, rz - [axis angle] | array
+    """
+    quaternion = np.array([quaternion[0], quaternion[1], quaternion[2], quaternion[3]])
+    rotation = R.from_quat(quaternion)
+    axis_angle = rotation.as_rotvec()
+    return axis_angle
 
 
 class ArmRobot:
 
     def __init__(self) -> None:
-        self.ROBOT_HOST = "192.168.2.6"
+        self.ROBOT_HOST = "192.168.1.17"
         self.MOVE_SPEED = 0.15
         self.GP_OPEN = 0
         self.GP_CLOSE = 1
@@ -47,7 +102,7 @@ class ArmRobot:
             self.gripper.move(self.gripper.get_open_position(), 255, 255)
 
         print(f"the robot is initing motion, please waiting for this process over...")
-        time.sleep(10)
+        time.sleep(5)
         print(f"the robot init motion over.")
 
     def get_state(self):

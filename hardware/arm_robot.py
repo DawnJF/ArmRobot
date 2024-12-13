@@ -1,7 +1,8 @@
 from rtde_control import RTDEControlInterface
 from rtde_receive import RTDEReceiveInterface
 import sys
-sys.path.insert(0,"/home/robot/UR_Robot_Arm_Show/tele_ws/src/tele_ctrl_jeff/scripts")
+
+sys.path.insert(0, "/home/robot/UR_Robot_Arm_Show/tele_ws/src/tele_ctrl_jeff/scripts")
 from robotiq_gripper import RobotiqGripper
 import time
 import numpy as np
@@ -118,6 +119,18 @@ class ArmRobot:
 
         return data
 
+    def send_action(self, action):
+        state = [*action[:3], *quat_to_axis(action[3:7])]
+        self.rtde_ctl.moveL(state, speed=self.MOVE_SPEED)
+
+        ## gripper
+        if action[-1] > self.GP_CRITERIA and self.gripper_status == self.GP_OPEN:
+            self.gripper_status = self.GP_CLOSE
+            self.gripper.move(self.gripper.get_closed_position(), 255, 255)
+        if action[-1] < self.GP_CRITERIA and self.gripper_status == self.GP_CLOSE:
+            self.gripper_status = self.GP_OPEN
+            self.gripper.move(self.gripper.get_open_position(), 255, 255)
+
     def run(self, actions_pred):
         actions_pred = actions_pred.reshape(-1, 8)  # [H,D] | pos(3) + rot(4) + grip(1)
         actions_pred = actions_pred[::2, ...]
@@ -129,16 +142,8 @@ class ArmRobot:
         for i, action in enumerate(actions_pred):
             # action = np.array(action['pose'])
             ## move
-            next_state = [*action[:3], *quat_to_axis(action[3:7])]
-            self.rtde_ctl.moveL(next_state, speed=self.MOVE_SPEED)
+            self.send_action(action)
 
-            ## gripper
-            if action[-1] > self.GP_CRITERIA and self.gripper_status == self.GP_OPEN:
-                self.gripper_status = self.GP_CLOSE
-                self.gripper.move(self.gripper.get_closed_position(), 255, 255)
-            if action[-1] < self.GP_CRITERIA and self.gripper_status == self.GP_CLOSE:
-                self.gripper_status = self.GP_OPEN
-                self.gripper.move(self.gripper.get_open_position(), 255, 255)
             if i == 0:
                 time.sleep(1)
             else:

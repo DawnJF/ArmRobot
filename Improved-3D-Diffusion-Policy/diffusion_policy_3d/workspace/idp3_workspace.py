@@ -34,6 +34,16 @@ from diffusion_policy_3d.model.common.lr_scheduler import get_scheduler
 OmegaConf.register_new_resolver("eval", eval, replace=True)
 
 
+def print_model_parameters(model):
+    total_params = sum(p.numel() for p in model.parameters())
+    # 转换为M（百万）和B（十亿）
+    total_params_M = total_params / 1e6  # 百万
+    total_params_B = total_params / 1e9  # 十亿
+    print(
+        f"==== Total number of parameters: {total_params} ({total_params_M:.2f}M / {total_params_B:.6f}B)"
+    )
+
+
 class iDP3Workspace(BaseWorkspace):
     include_keys = ["global_step", "epoch"]
 
@@ -48,6 +58,7 @@ class iDP3Workspace(BaseWorkspace):
 
         # configure model
         self.model: DiffusionPointcloudPolicy = hydra.utils.instantiate(cfg.policy)
+        print_model_parameters(self.model)
 
         self.ema_model: DiffusionPointcloudPolicy = None
         if cfg.training.use_ema:

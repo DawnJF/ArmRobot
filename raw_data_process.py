@@ -2,34 +2,35 @@ import json, os, zarr
 import numpy as np
 
 
-def run(data_path, save_path):
+def run(data_path_list, save_path):
 
     colored_clouds = []
     actions = []
     states = []
     episode_ends = []
 
-    folders_name = os.listdir(data_path)
-    json_files = [
-        os.path.join(data_path, folder_name, "data.json")
-        for folder_name in folders_name
-    ]
+    for data_path in data_path_list:
+        folders_name = os.listdir(data_path)
+        json_files = [
+            os.path.join(data_path, folder_name, "data.json")
+            for folder_name in folders_name
+        ]
 
-    folder = data_path.split("/")[-1]
+        folder = data_path.split("/")[-1]
 
-    for index, json_file in enumerate(json_files):
-        with open(json_file, "r") as file:
-            data = json.load(file)
+        for index, json_file in enumerate(json_files):
+            with open(json_file, "r") as file:
+                data = json.load(file)
 
-        for item in data:
-            file = os.path.join(data_path, item["point_cloud"].split(folder + "/")[1])
-            colored_cloud = np.load(file)
-            colored_clouds.append(colored_cloud)
+            for item in data:
+                file = os.path.join(data_path, item["point_cloud"].split(folder + "/")[1])
+                colored_cloud = np.load(file)
+                colored_clouds.append(colored_cloud)
 
-            states.append(item["pose"])
-            actions.append(item["pose"])  # TODO
+                states.append(item["pose"])
+                actions.append(item["pose"])  # TODO
 
-        episode_ends.append(len(colored_clouds))
+            episode_ends.append(len(colored_clouds))
 
     colored_clouds = np.array(colored_clouds).astype(np.uint8)
     actions = np.array(actions).astype(np.float32)
@@ -50,8 +51,10 @@ def run(data_path, save_path):
 
 if __name__ == "__main__":
 
-    data_path = "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1211"
-    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/1211"
+    data_path = [
+        # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1211",
+    "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1213"]
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/1213"
 
     run(data_path, save_path)
     print("done")

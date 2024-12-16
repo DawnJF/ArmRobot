@@ -10,12 +10,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/Improved-3D-Diffusion-Policy/train.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "args": [
                 "--config-name",
                 "idp3.yaml",
                 "task=gr1_dex-3d",
                 "hydra.run.dir=output/test",
-                "task.dataset.zarr_path=/storage/liujinxin/code/iDP3/data/train_data/corn"
+                "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1211"
             ]
         }
     ]

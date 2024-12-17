@@ -18,6 +18,21 @@
                 "hydra.run.dir=output/test",
                 "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1211"
             ]
+        },
+        {
+            "name": "train 2d",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/Improved-3D-Diffusion-Policy/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--config-name",
+                "dp_224x224_r3m.yaml",
+                "task=gr1_dex-image",
+                "hydra.run.dir=output/test",
+                "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1213+1211_rgb"
+            ]
         }
     ]
 }

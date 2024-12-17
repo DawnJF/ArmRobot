@@ -8,11 +8,11 @@ shape_meta: &shape_meta
       type: rgb
       horizon: 2
     agent_pos:
-      shape: [32]
+      shape: [8]
       type: low_dim
       horizon: 2
   action:
-    shape: [25]
+    shape: [8]
     horizon: 16
 
 

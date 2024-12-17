@@ -134,7 +134,7 @@ logging:
   group: ${exp_name}
   id: null
   mode: online
-  name: ${training.seed}
+  name: ${exp_name}
   project: humanoid_mimic
   resume: true
   tags:

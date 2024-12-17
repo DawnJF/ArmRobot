@@ -42,7 +42,8 @@ def remove_language_head(state_dict):
     return state_dict
 
 def load_r3m(modelid, pretrained=True):
-    home = os.path.join(expanduser("~"), ".r3m")
+    # home = os.path.join(expanduser("~"), ".r3m")
+    home = os.path.join("/storage/liujinxin/code/ArmRobot/models")
     if modelid == "resnet50":
         foldername = "r3m_50"
         modelurl = 'https://drive.google.com/uc?id=1Xu0ssuG0N1zjZS54wmWzJ7-nb0-7XzbA'
@@ -60,9 +61,11 @@ def load_r3m(modelid, pretrained=True):
 
     if not os.path.exists(os.path.join(home, foldername)):
         os.makedirs(os.path.join(home, foldername))
-        
+
     modelpath = os.path.join(home, foldername, "model.pt")
     configpath = os.path.join(home, foldername, "config.yaml")
+
+    print(f"==== {modelid}: modelpath: {modelpath} : {os.path.exists(modelpath)}")
     if not os.path.exists(modelpath):
         gdown.download(modelurl, modelpath, quiet=False)
         gdown.download(configurl, configpath, quiet=False)

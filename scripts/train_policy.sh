@@ -1,22 +1,34 @@
 # Examples:
 
-# bash scripts/train_policy.sh idp3 gr1_dex-3d 1211_9
+# bash scripts/train_policy.sh idp3 gr1_dex-3d 1213+1211_40 1213+1211
+# bash scripts/train_policy.sh dp_224x224_r3m gr1_dex-image 1213+1211_40_2d 1213+1211_rgb
 
 # dataset_path=/storage/liujinxin/code/ArmRobot/training_data_example # dim: 32
-dataset_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1211
 
+
+alg_name=${1}
+task_name=${2}
+addition_info=${3}
+dataset_path="/storage/liujinxin/code/ArmRobot/dataset/train_data/${4}"
+
+echo "dataset: $dataset_path"
+
+current_time=$(date +"%-m-%-d-%-H-%-M-%-S")
+echo "Current time: $current_time"
 
 DEBUG=False
 wandb_mode=online #online #offline
 
 
-alg_name=${1}
-task_name=${2}
 config_name=${alg_name}
-addition_info=${3}
+
 seed=0
-exp_name=${task_name}-${alg_name}-${addition_info}
+exp_name=${alg_name}_${addition_info}_$current_time
+echo "exp_name: $exp_name"
 run_dir="outputs/${exp_name}_seed${seed}"
+
+echo "run_dir: $run_dir"
+echo
 
 gpu_id=0
 echo -e "\033[33mgpu id (to use): ${gpu_id}\033[0m"

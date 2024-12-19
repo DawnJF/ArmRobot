@@ -144,7 +144,6 @@ class SingleVisionProcess(Process):
             depth_frame[depth_frame < clip_lower] = clip_lower
             depth_frame[depth_frame > clip_high] = clip_high
 
-            color_frame = cv2.cvtColor(color_frame, cv2.COLOR_BGR2RGB)
 
             point_cloud_frame = process_depth_image(
                 self.camera_info, color_frame, depth_frame
@@ -287,8 +286,11 @@ def show_point_cloud(point_cloud):
 
 def show_img(img):
 
-    # Use OpenCV to display the depth image
-    cv2.imshow("Depth Image", img)
+    img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+    # 显示图像
+    cv2.imshow("Image", img_bgr)
+
 
     cv2.waitKey(1)
 
@@ -307,15 +309,10 @@ if __name__ == "__main__":
         print("depth: ", out["depth"].shape)
         print("point_cloud: ", out["point_cloud"].shape)
 
-        # imageio.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/color.png', out['color'])
-        # imageio.imwrite(f'color_right.png', out['right_color'])
-        # imageio.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/depth.png', out['depth'])
-        # imageio.imwrite(f'depth_front.png', out['right_front'])
-        # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/color.png', out['color'])
-        # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/depth.png', out['depth'])
-        show_depth(out["depth"])
+
+        # show_depth(out["depth"])
         # show_point_cloud(out["point_cloud"])
-        # show_img(out["color"])
+        show_img(out["color"])
         # plt.savefig("front_depth.png")
         # import visualizer
         # visualizer.visualize_pointcloud(out['right_point_cloud'])

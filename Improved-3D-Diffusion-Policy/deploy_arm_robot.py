@@ -119,11 +119,6 @@ class Inference:
         self.depth_array.append(cam_dict["depth"])
         self.cloud_array.append(cam_dict["point_cloud"])
 
-        # cv2.imwrite(
-        #     "/media/robot/2CCF4D6BBC2D923E/mpz/iDP3/Improved-3D-Diffusion-Policy/test.png",
-        #     self.color_array,
-        # )
-
         # env_qpos = np.zeros((1, 8))
         # env_qpos[0, 6 + 5 + 2 + 5 + 2 : 6 + 5 + 
         self.env_qpos_array.append(self.robot.get_state())

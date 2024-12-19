@@ -386,13 +386,14 @@ class DPWorkspace(BaseWorkspace):
             tag = "latest"
             # tag = "best"
             lastest_ckpt_path = self.get_checkpoint_path(tag=tag)
+            print(f"get_model lastest_ckpt_path: {lastest_ckpt_path}")
 
             if lastest_ckpt_path.is_file():
-                cprint(f"Resuming from checkpoint {lastest_ckpt_path}", "magenta")
+                cprint(f"==== Resuming from checkpoint {lastest_ckpt_path}", "magenta")
                 self.load_checkpoint(path=lastest_ckpt_path)
         else:
             if ckpt_path.is_file():
-                cprint(f"Resuming from checkpoint {ckpt_path}", "magenta")
+                cprint(f"==== Resuming from checkpoint {ckpt_path}", "magenta")
                 self.load_checkpoint(path=ckpt_path)
             else:
                 raise ValueError(f"Checkpoint file not found: {ckpt_path}")
@@ -401,6 +402,9 @@ class DPWorkspace(BaseWorkspace):
         if cfg.training.use_ema:
             policy = self.ema_model
         policy.eval()
+
+
+        print("==== get_model normalizer:", policy.normalizer.params_dict.keys())
 
         return policy
 

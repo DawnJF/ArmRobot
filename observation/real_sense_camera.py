@@ -313,8 +313,8 @@ if __name__ == "__main__":
         # imageio.imwrite(f'depth_front.png', out['right_front'])
         # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/color.png', out['color'])
         # cv2.imwrite(f'/media/robot/2CCF4D6BBC2D923E/mpz/depth.png', out['depth'])
-        # show_depth(out["depth"])
-        show_point_cloud(out["point_cloud"])
+        show_depth(out["depth"])
+        # show_point_cloud(out["point_cloud"])
         # show_img(out["color"])
         # plt.savefig("front_depth.png")
         # import visualizer

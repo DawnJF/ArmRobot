@@ -341,6 +341,8 @@ class iDP3Workspace(BaseWorkspace):
             policy = self.ema_model
         policy.eval()
 
+        print("====get_model normalizer:", policy.normalizer.params_dict.keys())
+
         return policy
 
 

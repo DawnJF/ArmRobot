@@ -84,6 +84,7 @@ class GR1DexDatasetImage(BaseDataset):
         return val_set
 
     def get_normalizer(self, mode="limits", **kwargs):
+        print("==== get_normalizer")
         data = {"action": self.replay_buffer["action"]}
         normalizer = LinearNormalizer()
         normalizer.fit(data=data, last_n_dims=1, mode=mode, **kwargs)

@@ -1,6 +1,7 @@
 # Examples:
 
-#   bash scripts/deploy_policy.sh idp3 gr1_dex-3d 1211_9
+# bash scripts/deploy_policy.sh idp3 gr1_dex-3d test_3
+# bash scripts/deploy_policy.sh dp_224x224_r3m gr1_dex-image test
 
 dataset_path=/media/robot/2CCF4D6BBC2D923E/tt/train_data/1211
 
@@ -14,7 +15,7 @@ config_name=${alg_name}
 addition_info=${3}
 seed=0
 exp_name=${task_name}-${alg_name}-${addition_info}
-run_dir="outputs/${exp_name}_seed${seed}"
+run_dir="outputs/${3}"
 echo $run_dir
 
 gpu_id=0
@@ -36,6 +37,6 @@ python deploy_arm_robot.py --config-name=${config_name}.yaml \
                             exp_name=${exp_name} \
                             logging.mode=${wandb_mode} \
                             checkpoint.save_ckpt=${save_ckpt} \
-                            task.dataset.zarr_path=$dataset_path 
+                            task.dataset.zarr_path=$dataset_path
 
 

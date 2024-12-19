@@ -79,6 +79,7 @@ class GR1DexDataset3D(BaseDataset):
         return val_set
 
     def get_normalizer(self, mode="limits", **kwargs):
+        print("==== get_normalizer ====")
         data = {"action": self.replay_buffer["action"]}
         # TODO
         # data = {

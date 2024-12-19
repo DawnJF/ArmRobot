@@ -22,6 +22,7 @@ zenoh_path = "/home/gr1p24ap0049/projects/gr1-dex-real/teleop-zenoh"
 sys.path.append(zenoh_path)
 
 from observation.real_sense_camera import MultiRealSense
+from observation.image_crop import process_image_npy
 
 import numpy as np
 import torch
@@ -54,9 +55,10 @@ class Inference:
         else:
             self.device = torch.device("cpu")
 
-    def construct_obs(self, agent_pos_array, obs_cloud_array):
+    def construct_obs(self, agent_pos_array, obs_cloud_array, rgb_array):
         agent_pos = np.stack(agent_pos_array, axis=0)
         obs_cloud = np.stack(obs_cloud_array, axis=0)
+        image = np.stack(rgb_array, axis=0)
 
         obs_dict = {
             "agent_pos": torch.from_numpy(agent_pos).unsqueeze(0).to(self.device),
@@ -64,7 +66,9 @@ class Inference:
         obs_dict["point_cloud"] = (
             torch.from_numpy(obs_cloud).unsqueeze(0).to(self.device)
         )
-        # print(f"construct_obs, ", obs_dict["agent_pos"].shape)
+        obs_dict['image'] = torch.from_numpy(image).unsqueeze(0).to(self.device)
+
+        print(f"obs_cloud_array, ", obs_cloud_array[0])
         return obs_dict
 
     def step(self, action):
@@ -78,7 +82,7 @@ class Inference:
             self.action_array.append(act)
 
             cam_dict = self.camera()
-            self.color_array.append(cam_dict["color"])
+            self.color_array.append(process_image_npy(cam_dict["color"]))
             self.depth_array.append(cam_dict["depth"])
             self.cloud_array.append(cam_dict["point_cloud"])
 
@@ -88,6 +92,7 @@ class Inference:
         obs_dict = self.construct_obs(
             self.env_qpos_array[-self.obs_horizon :],
             self.cloud_array[-self.obs_horizon :],
+            self.color_array[-self.obs_horizon :]
         )
 
         return obs_dict
@@ -110,7 +115,7 @@ class Inference:
         # ======== INIT ==========
         # camera.start()
         cam_dict = self.camera()
-        self.color_array.append(cam_dict["color"])
+        self.color_array.append(process_image_npy(cam_dict["color"]))
         self.depth_array.append(cam_dict["depth"])
         self.cloud_array.append(cam_dict["point_cloud"])
 
@@ -126,6 +131,7 @@ class Inference:
         obs_dict = self.construct_obs(
             [self.env_qpos_array[-1]] * self.obs_horizon,
             [self.cloud_array[-1]] * self.obs_horizon,
+            [self.color_array[-1]] * self.obs_horizon,
         )
 
         return obs_dict
@@ -144,7 +150,14 @@ def main(cfg: OmegaConf):
     cls = hydra.utils.get_class(cfg._target_)
     workspace: BaseWorkspace = cls(cfg)
 
-    assert workspace.__class__.__name__ != "DPWorkspace"
+    print(f"==== workspace: {workspace.__class__.__name__} ====")
+    # print(f"==== task: {cfg.task} ====")
+    if "3D" in workspace.__class__.__name__:
+        point_cloud_or_image = True
+    else:
+        point_cloud_or_image = False
+    print(f"==== point_cloud_or_image: {point_cloud_or_image} ====")
+    
 
     # fetch policy model
     policy = workspace.get_model()
@@ -192,6 +205,10 @@ def main(cfg: OmegaConf):
 
     while step_count < roll_out_length:
         with torch.no_grad():
+            if point_cloud_or_image:
+                del obs_dict["image"]
+            else:
+                del obs_dict["point_cloud"]
             action = policy(obs_dict)[0]
 
         obs_dict = env.step(action.numpy())

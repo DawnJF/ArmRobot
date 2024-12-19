@@ -134,6 +134,7 @@ class DiffusionPointcloudPolicy(BasePolicy):
 
         # normalize input
         nobs = self.normalizer.normalize(obs_dict)
+        # print(nobs['agent_pos'])
         if not self.use_pc_color:
             nobs["point_cloud"] = nobs["point_cloud"][..., :3]
         if self.use_pc_color:  # normalize color

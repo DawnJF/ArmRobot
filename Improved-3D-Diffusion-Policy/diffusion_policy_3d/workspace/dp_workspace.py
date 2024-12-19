@@ -46,9 +46,9 @@ class DPWorkspace(BaseWorkspace):
         random.seed(seed)
 
         # configure model
-        self.model: DiffusionImagePolicy = hydra.utils.instantiate(cfg.policy)
+        self.model = hydra.utils.instantiate(cfg.policy)
 
-        self.ema_model: DiffusionImagePolicy = None
+        self.ema_model = None
         if cfg.training.use_ema:
             self.ema_model = copy.deepcopy(self.model)
 

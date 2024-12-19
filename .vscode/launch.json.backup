@@ -5,14 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "zhaowei",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}"
-        },
-        {
             "name": "train",
             "type": "debugpy",
             "request": "launch",
@@ -24,7 +16,7 @@
                 "idp3.yaml",
                 "task=gr1_dex-3d",
                 "hydra.run.dir=output/test",
-                "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1211"
+                "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1213+1211"
             ]
         },
         {
@@ -43,7 +35,7 @@
             ]
         },
         {
-            "name": "train diffusion policy 2d",
+            "name": "train diffusion-policy 2d",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/Improved-3D-Diffusion-Policy/train.py",
@@ -51,7 +43,7 @@
             "justMyCode": false,
             "args": [
                 "--config-name",
-                "dp_lgb21.yaml",
+                "dp_2.yaml",
                 "task=gr1_dex-image",
                 "hydra.run.dir=output/test2",
                 "task.dataset.zarr_path=/storage/liujinxin/code/ArmRobot/dataset/train_data/1213+1211_rgb"

@@ -3,11 +3,14 @@ from PIL import Image
 import numpy as np
 
 left, top, right, bottom = 230, 0, 770, 540
+re_size = (224, 224)
+# left, top, right, bottom = 230, 0, 900, 540
+# re_size = (512, 512)
 
 o_size = (960, 540)
 
 
-def process_image(img: Image, left, top, right, bottom, new_size=(224, 224)):
+def process_image(img: Image, left, top, right, bottom, new_size=re_size):
     """
     裁剪单张图片并保存为新文件
 
@@ -109,9 +112,9 @@ def run():
 
 
 def test():
-    file = "/storage/liujinxin/code/ArmRobot/dataset/rgb_960x540_1.png"
-    output_file = "/storage/liujinxin/code/ArmRobot/dataset/rgb_960x540_1_.png"
-    left, top, right, bottom = 230, 0, 770, 540
+    file = "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1219/cube_a0/image/wrist/wrist_640x480_0.png"
+    output_file = "/storage/liujinxin/code/ArmRobot/dataset/wrist_640x480_0_.png"
+    left, top, right, bottom = 0, 0, 640, 480
 
     process_image_file(file, output_file, left, top, right, bottom)
 

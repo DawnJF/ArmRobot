@@ -22,7 +22,6 @@ import numpy as np
 from termcolor import cprint
 import shutil
 from diffusion_policy_3d.workspace.base_workspace import BaseWorkspace
-from diffusion_policy_3d.policy.diffusion_image_policy import DiffusionImagePolicy
 from diffusion_policy_3d.dataset.base_dataset import BaseImageDataset
 from diffusion_policy_3d.common.checkpoint_util import TopKCheckpointManager
 from diffusion_policy_3d.common.json_logger import JsonLogger
@@ -402,7 +401,6 @@ class DPWorkspace(BaseWorkspace):
         if cfg.training.use_ema:
             policy = self.ema_model
         policy.eval()
-
 
         print("==== get_model normalizer:", policy.normalizer.params_dict.keys())
 

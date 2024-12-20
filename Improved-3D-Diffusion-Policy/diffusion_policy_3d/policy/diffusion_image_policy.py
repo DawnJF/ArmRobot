@@ -35,7 +35,7 @@ class DiffusionImagePolicy(BasePolicy):
         condition_type="film",
         use_depth=False,
         use_depth_only=False,
-        obs_encoder: TimmObsEncoder = None,
+        obs_encoder=None,
         # parameters passed to step
         **kwargs,
     ):

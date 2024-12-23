@@ -35,7 +35,7 @@ class GR1DexDatasetImage(BaseDataset):
         use_depth=False,
     ):
         super().__init__()
-        cprint(f"Loading GR1DexDataset from {zarr_path}", "green")
+        cprint(f"Loading GR1DexDataset from {zarr_path} horizon:{horizon}", "green")
         self.task_name = task_name
         self.use_img = use_img
         self.use_depth = use_depth
@@ -47,6 +47,7 @@ class GR1DexDatasetImage(BaseDataset):
 
         if self.use_img:
             buffer_keys.append("img")
+            buffer_keys.append("wrist_img")
         if self.use_depth:
             buffer_keys.append("depth")
 
@@ -90,6 +91,7 @@ class GR1DexDatasetImage(BaseDataset):
         normalizer.fit(data=data, last_n_dims=1, mode=mode, **kwargs)
         if self.use_img:
             normalizer["image"] = SingleFieldLinearNormalizer.create_identity()
+            normalizer["wrist_image"] = SingleFieldLinearNormalizer.create_identity()
         if self.use_depth:
             normalizer["depth"] = SingleFieldLinearNormalizer.create_identity()
 
@@ -105,6 +107,7 @@ class GR1DexDatasetImage(BaseDataset):
 
         if self.use_img:
             image = sample["img"][:,].astype(np.float32)
+            wrist_image = sample["wrist_img"][:,].astype(np.float32)
         if self.use_depth:
             depth = sample["depth"][:,].astype(np.float32)
 
@@ -116,6 +119,7 @@ class GR1DexDatasetImage(BaseDataset):
         }
         if self.use_img:
             data["obs"]["image"] = image
+            data["obs"]["wrist_image"] = wrist_image
         if self.use_depth:
             data["obs"]["depth"] = depth
 

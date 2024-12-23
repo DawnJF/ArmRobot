@@ -153,6 +153,11 @@ class DiffusionUnetImagePolicy(BasePolicy):
                 nobs["image"] = nobs["image"].permute(0, 3, 1, 2)
             elif len(nobs["image"].shape) == 5:
                 nobs["image"] = nobs["image"].permute(0, 1, 4, 2, 3)
+        if "wrist_image" in nobs and nobs["wrist_image"].shape[-1] == 3:
+            if len(nobs["wrist_image"].shape) == 4:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 3, 1, 2)
+            elif len(nobs["wrist_image"].shape) == 5:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 1, 4, 2, 3)
 
         # build input
         device = self.device
@@ -223,6 +228,11 @@ class DiffusionUnetImagePolicy(BasePolicy):
                 nobs["image"] = nobs["image"].permute(0, 3, 1, 2)
             elif len(nobs["image"].shape) == 5:
                 nobs["image"] = nobs["image"].permute(0, 1, 4, 2, 3)
+        if "wrist_image" in nobs and nobs["wrist_image"].shape[-1] == 3:
+            if len(nobs["wrist_image"].shape) == 4:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 3, 1, 2)
+            elif len(nobs["wrist_image"].shape) == 5:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 1, 4, 2, 3)
 
         # handle different ways of passing observation
         local_cond = None

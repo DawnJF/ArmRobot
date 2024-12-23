@@ -2,6 +2,8 @@
 
 # bash scripts/train_policy.sh idp3 gr1_dex-3d 1213+1211_40 1213+1211
 # bash scripts/train_policy.sh dp_224x224_r3m gr1_dex-image 1213+1211_40_2d 1213+1211_rgb
+# bash scripts/train_policy.sh dp_lgb21 dp_dex 1219_30_2i 1219
+# bash scripts/train_policy.sh dp_224x224_r3m dp_dex 1219_30_2i 1219
 
 # dataset_path=/storage/liujinxin/code/ArmRobot/training_data_example # dim: 32
 

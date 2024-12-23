@@ -43,7 +43,7 @@ class DiffusionImagePolicy(BasePolicy):
 
         self.use_depth = use_depth
         self.use_depth_only = use_depth_only
-        cprint(f"use_depth: {use_depth}, use_depth_only: {use_depth_only}", "red")
+        cprint(f"use_depth: {use_depth}, use_depth_only: {use_depth_only} n_obs_steps:{n_obs_steps}", "red")
         # parse shape_meta
         action_shape = shape_meta["action"]["shape"]
         self.action_shape = action_shape
@@ -113,6 +113,11 @@ class DiffusionImagePolicy(BasePolicy):
                 nobs["image"] = nobs["image"].permute(0, 1, 4, 2, 3)
             if len(nobs["image"].shape) == 4:
                 nobs["image"] = nobs["image"].permute(0, 3, 1, 2)
+        if "wrist_image" in nobs and nobs["wrist_image"].shape[-1] == 3:
+            if len(nobs["wrist_image"].shape) == 5:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 1, 4, 2, 3)
+            if len(nobs["wrist_image"].shape) == 4:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 3, 1, 2)
         if self.use_depth and not self.use_depth_only:
             nobs["image"] = torch.cat(
                 [nobs["image"], nobs["depth"].unsqueeze(-3)], dim=-3
@@ -230,6 +235,11 @@ class DiffusionImagePolicy(BasePolicy):
                 nobs["image"] = nobs["image"].permute(0, 1, 4, 2, 3)
             if len(nobs["image"].shape) == 4:
                 nobs["image"] = nobs["image"].permute(0, 3, 1, 2)
+        if "wrist_image" in nobs and nobs["wrist_image"].shape[-1] == 3:
+            if len(nobs["wrist_image"].shape) == 5:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 1, 4, 2, 3)
+            if len(nobs["wrist_image"].shape) == 4:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 3, 1, 2)
         if self.use_depth and not self.use_depth_only:
             nobs["image"] = torch.cat(
                 [nobs["image"], nobs["depth"].unsqueeze(-3)], dim=-3
@@ -306,6 +316,11 @@ class DiffusionImagePolicy(BasePolicy):
                 nobs["image"] = nobs["image"].permute(0, 1, 4, 2, 3)
             if len(nobs["image"].shape) == 4:
                 nobs["image"] = nobs["image"].permute(0, 3, 1, 2)
+        if "wrist_image" in nobs and nobs["wrist_image"].shape[-1] == 3:
+            if len(nobs["wrist_image"].shape) == 5:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 1, 4, 2, 3)
+            if len(nobs["wrist_image"].shape) == 4:
+                nobs["wrist_image"] = nobs["wrist_image"].permute(0, 3, 1, 2)
         if self.use_depth and not self.use_depth_only:
             nobs["image"] = torch.cat(
                 [nobs["image"], nobs["depth"].unsqueeze(-3)], dim=-3

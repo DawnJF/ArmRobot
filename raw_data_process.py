@@ -3,7 +3,7 @@ import numpy as np
 from observation.Image_process_utils import process_image_npy
 
 
-def read_json(json_file, data_dict):
+def read_json(json_file, data_dict, image_params):
     with open(json_file, "r") as file:
         data = json.load(file)
 
@@ -19,7 +19,9 @@ def read_json(json_file, data_dict):
         rgb_img_file = os.path.join(
             data_path, item["rgb"].split(data_path.split("/")[-1] + "/")[1]
         )
-        data_dict["imgs"].append(process_image_npy(np.load(rgb_img_file), "rgb"))
+        data_dict["imgs"].append(
+            process_image_npy(np.load(rgb_img_file), "rgb", image_params)
+        )
 
         # FIXME
         wrist_img_file = os.path.join(
@@ -27,14 +29,14 @@ def read_json(json_file, data_dict):
             rgb_img_file.replace("rgb", "wrist").replace("960x540", "640x480"),
         )
         data_dict["wrist_imgs"].append(
-            process_image_npy(np.load(wrist_img_file), "wrist")
+            process_image_npy(np.load(wrist_img_file), "wrist", image_params)
         )
         scene_img_file = os.path.join(
             data_path,
             rgb_img_file.replace("rgb", "scene").replace("960x540", "640x480"),
         )
         data_dict["scene_imgs"].append(
-            process_image_npy(np.load(scene_img_file), "scene")
+            process_image_npy(np.load(scene_img_file), "scene", image_params)
         )
 
         data_dict["states"].append(item["pose"])
@@ -42,7 +44,7 @@ def read_json(json_file, data_dict):
     data_dict["episode_ends"].append(len(data_dict["colored_clouds"]))
 
 
-def process(save_path, json_files):
+def process(save_path, json_files, image_params):
     colored_clouds = []
     actions = []
     states = []
@@ -61,7 +63,7 @@ def process(save_path, json_files):
     }
 
     for index, json_file in enumerate(json_files):
-        read_json(json_file, data)
+        read_json(json_file, data, image_params)
 
     colored_clouds = np.array(colored_clouds).astype(np.float32)
     actions = np.array(actions).astype(np.float32)
@@ -89,7 +91,7 @@ def process(save_path, json_files):
         data_group.create_dataset("episode_ends", data=episode_ends, dtype="int64")
 
 
-def run(data_path_list, save_path):
+def run(data_path_list, save_path, image_params):
 
     for data_path in data_path_list:
         folders_name = os.listdir(data_path)
@@ -97,7 +99,7 @@ def run(data_path_list, save_path):
             os.path.join(data_path, folder_name, "data.json")
             for folder_name in folders_name
         ]
-        process(save_path, json_files)
+        process(save_path, json_files, image_params)
 
 
 def run_folder_list(json_folder_list, save_path):
@@ -108,14 +110,31 @@ def run_folder_list(json_folder_list, save_path):
     process(save_path, json_files)
 
 
-if __name__ == "__main__":
+def run_512():
+    params_512_512 = {
+        "rgb": {
+            "size": (960, 540),
+            "crop": (230, 0, 770, 540),
+            "resize": (512, 512),
+        },
+        "wrist": {
+            "size": (640, 480),
+            "crop": (0, 0, 640, 480),
+            "resize": (512, 512),
+        },
+        "scene": {
+            "size": (640, 480),
+            "crop": (100, 160, 540, 480),
+            "resize": (512, 512),
+        },
+    }
 
     data_path_list = [
         # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1211",
         "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1219",
     ]
     save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/1219"
-    run(data_path_list, save_path)
+    run(data_path_list, save_path, params_512_512)
 
     # data_path_list = [
     #     "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1213/cube_a29",
@@ -125,3 +144,36 @@ if __name__ == "__main__":
     # run_folder_list(data_path_list, save_path)
 
     print("done")
+
+
+def run_240():
+    params = {
+        "rgb": {
+            "size": (960, 540),
+            "crop": (230, 0, 770, 540),
+            "resize": (240, 240),
+        },
+        "wrist": {
+            "size": (640, 480),
+            "crop": (0, 0, 640, 480),
+            "resize": (240, 240),
+        },
+        "scene": {
+            "size": (640, 480),
+            "crop": (100, 160, 540, 480),
+            "resize": (240, 240),
+        },
+    }
+
+    data_path_list = [
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1219",
+    ]
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_1224+1219"
+    run(data_path_list, save_path, params)
+
+    print("done")
+
+
+if __name__ == "__main__":
+    run_240()

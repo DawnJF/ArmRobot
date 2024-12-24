@@ -14,24 +14,8 @@ def process_image_npy_i(npy, o_size, left, top, right, bottom, re_size):
         print(f"发生错误: {e}")
 
 
-def process_image_npy(npy, type):
-    params = {
-        "rgb": {
-            "size": (960, 540),
-            "crop": (230, 0, 770, 540),
-            "resize": (512, 512),
-        },
-        "wrist": {
-            "size": (640, 480),
-            "crop": (0, 0, 640, 480),
-            "resize": (512, 512),
-        },
-        "scene": {
-            "size": (640, 480),
-            "crop": (100, 160, 540, 480),
-            "resize": (512, 512),
-        },
-    }
+def process_image_npy(npy, type, image_params):
+    params = image_params
 
     left, top, right, bottom = params[type]["crop"]
 

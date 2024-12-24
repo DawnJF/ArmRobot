@@ -33,7 +33,7 @@ class GR1DexDataset3D(BaseDataset):
         num_points=4096,
     ):
         super().__init__()
-        cprint(f"Loading GR1DexDataset from {zarr_path}", "green")
+        cprint(f"Loading GR1DexDataset from {zarr_path} horizon: {horizon}", "green")
         self.task_name = task_name
 
         self.num_points = num_points

@@ -1,7 +1,8 @@
 # Examples:
 
-# bash scripts/deploy_policy.sh idp3 gr1_dex-3d test_3
+# bash scripts/deploy_policy.sh idp3 gr1_dex-3d test
 # bash scripts/deploy_policy.sh dp_224x224_r3m gr1_dex-image test
+# bash scripts/deploy_policy.sh dp_multi_img dp_dex test_m
 
 dataset_path=/media/robot/2CCF4D6BBC2D923E/tt/train_data/1211
 
@@ -28,7 +29,7 @@ cd Improved-3D-Diffusion-Policy
 export HYDRA_FULL_ERROR=1 
 export CUDA_VISIBLE_DEVICES=${gpu_id}
 
-python deploy_arm_robot.py --config-name=${config_name}.yaml \
+python deploy_platform.py --config-name=${config_name}.yaml \
                             task=${task_name} \
                             hydra.run.dir=${run_dir} \
                             training.debug=$DEBUG \

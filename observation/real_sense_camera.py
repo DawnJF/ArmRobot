@@ -11,7 +11,10 @@ import multiprocessing
 sys.path.insert(0, "/home/robot/ArmRobot")
 from observation.depth_image_process import process_depth_image
 
-multiprocessing.set_start_method("fork")
+try:
+    multiprocessing.set_start_method("fork")
+except:
+    print()
 
 np.printoptions(3, suppress=True)
 

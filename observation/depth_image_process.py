@@ -8,6 +8,19 @@ z_near = 0.1
 use_grid_sampling = True
 
 
+class CameraInfo:
+    """Camera intrisics for point cloud creation."""
+
+    def __init__(self, width, height, fx, fy, cx, cy, scale=1):
+        self.width = width
+        self.height = height
+        self.fx = fx
+        self.fy = fy
+        self.cx = cx
+        self.cy = cy
+        self.scale = scale
+
+
 def grid_sample_pcd(point_cloud, grid_size=0.005):
     """
     A simple grid sampling function for point clouds.
@@ -80,6 +93,26 @@ def create_colored_point_cloud(
 
 
 def process_depth_image(camera_info, color_frame, depth_frame):
+    point_cloud_frame = create_colored_point_cloud(
+        camera_info,
+        color_frame,
+        depth_frame,
+        far=z_far,
+        near=z_near,
+        num_points=num_points,
+    )
+    return point_cloud_frame
+
+
+def process_depth_image_offline(color_frame, depth_frame):
+    camera_info = CameraInfo(
+        1024,
+        768,
+        731.6640625,
+        731.4296875,
+        510.51171875,
+        418.9140625,
+    )
     point_cloud_frame = create_colored_point_cloud(
         camera_info,
         color_frame,

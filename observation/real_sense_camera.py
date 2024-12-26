@@ -148,9 +148,9 @@ class SingleVisionProcess(Process):
             depth_frame[depth_frame > clip_high] = clip_high
 
 
-            point_cloud_frame = process_depth_image(
-                self.camera_info, color_frame, depth_frame
-            )
+            # point_cloud_frame = process_depth_image(
+            #     self.camera_info, color_frame, depth_frame
+            # )
 
         else:
             color_frame = frame.get_color_frame()
@@ -161,7 +161,7 @@ class SingleVisionProcess(Process):
         # print("color:", color_frame.shape)
         # print("depth:", depth_frame.shape)
 
-        return color_frame, depth_frame, point_cloud_frame
+        return color_frame, depth_frame, None
 
     def run(self):
         self.pipeline, self.align, self.depth_scale, self.camera_info = (
@@ -178,7 +178,7 @@ class SingleVisionProcess(Process):
             color_frame, depth_frame, point_cloud_frame = self.get_vision()
             self.data[0] = color_frame
             self.data[1] = depth_frame
-            self.data[2] = point_cloud_frame
+            # self.data[2] = point_cloud_frame
             time.sleep(0.016)
 
     def terminate(self) -> None:
@@ -219,12 +219,12 @@ class MultiRealSense(object):
 
         front_color = self.data[0]
         front_depth = self.data[1]
-        point_cloud_frame = self.data[2]
+        # point_cloud_frame = self.data[2]
         cam_dict.update(
             {
                 "color": front_color,
                 "depth": front_depth,
-                "point_cloud": point_cloud_frame,
+                # "point_cloud": point_cloud_frame,
             }
         )
 

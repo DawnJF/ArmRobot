@@ -16,7 +16,7 @@ config_name=${alg_name}
 addition_info=${3}
 seed=0
 exp_name=${task_name}-${alg_name}-${addition_info}
-run_dir="outputs/${3}"
+run_dir="/media/robot/30F73268F87D0FEF/Checkpoints/idp3"
 echo $run_dir
 
 gpu_id=0

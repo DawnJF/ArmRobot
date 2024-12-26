@@ -301,6 +301,7 @@ def show_img(img):
 if __name__ == "__main__":
     cam = MultiRealSense()
     import matplotlib.pyplot as plt
+    from PIL import Image
 
     while True:
         out = cam()
@@ -312,10 +313,12 @@ if __name__ == "__main__":
         print("depth: ", out["depth"].shape)
         print("point_cloud: ", out["point_cloud"].shape)
 
-
-        # show_depth(out["depth"])
+        depth_image = Image.fromarray(out["depth"])
+        assert depth_image.size == (960, 540)
+        depth_image = depth_image.crop((230, 0, 960, 540))
+        show_depth(np.array(depth_image))
         # show_point_cloud(out["point_cloud"])
-        show_img(out["color"])
+        # show_img(out["color"])
         # plt.savefig("front_depth.png")
         # import visualizer
         # visualizer.visualize_pointcloud(out['right_point_cloud'])

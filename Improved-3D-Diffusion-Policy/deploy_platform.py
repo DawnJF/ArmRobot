@@ -3,19 +3,23 @@ import time
 import torch
 import numpy as np
 import os
-
+from omegaconf import OmegaConf
 import hydra
+import pathlib
+from PIL import Image
+
 
 os.environ["WANDB_SILENT"] = "True"
+OmegaConf.register_new_resolver("eval", eval, replace=True)
 
 sys.path.append("/home/robot/UR_Robot_Arm_Show/tele_ws/src/tele_ctrl_jeff/scripts/")
+sys.path.append("/home/robot/UR_Robot_Arm_Show/tele_ws/src/tele_ctrl_jeff/")
 from inference import InferenceEnv
 
 sys.path.append("/home/robot/ArmRobot")
+from observation.depth_image_process import process_depth_image_offline
 from observation.Image_process_utils import process_image_npy
 from hardware.arm_robot import ArmRobot
-
-
 
 
 class Inference:
@@ -119,6 +123,49 @@ class Inference:
 
         return model_input
 
+    def inference_by_only_pc(self, policy, obs_list):
+        """
+        从数据采集框架中拿到数据进行处理
+        Note: 与预训练时处理流程要保持一样
+        """
+
+        if len(obs_list) < self.obs_horizon:
+            env_obs = [obs_list[0]] * self.obs_horizon
+        else:
+            env_obs = obs_list[-self.obs_horizon :]
+
+        state_list = []
+        pc_list = []
+        for obs in env_obs:
+
+            depth_image = Image.fromarray(obs["depth"])
+            assert depth_image.size == (960, 540)
+            depth_image = depth_image.crop((230, 0, 960, 540))
+
+            rgb_image = Image.fromarray(obs["rgb"])
+            assert rgb_image.size == (960, 540)
+            rgb_image = rgb_image.crop((230, 0, 960, 540))
+
+
+            point_cloud = process_depth_image_offline(
+                np.array(rgb_image), np.array(depth_image)
+            )
+            pc_list.append(point_cloud)
+
+            state_list.append(obs["state"])
+
+        pc = np.stack(pc_list)
+        state = np.stack(state_list)
+
+        model_input = {}
+        model_input["point_cloud"] = (
+            torch.from_numpy(pc).unsqueeze(0).to(self.device)
+        )
+        model_input["agent_pos"] = torch.from_numpy(state).unsqueeze(0).to(self.device)
+
+        actions = policy(model_input)[0]
+        print(f"inference: {actions.shape}")
+        return actions
 
     def filter_actions(self, actions):
         """
@@ -146,11 +193,7 @@ class Inference:
                 print(obs.keys())
                 self.obs_list.append(obs)
 
-                model_input = self.construct_obs(self.obs_list)
-
-                actions = policy.predict_action(model_input)
-
-            actions = self.filter_actions(actions)
+                actions = self.inference_by_only_pc(policy, self.obs_list)
 
             for action in actions:
                 self.step_one(action)
@@ -171,16 +214,15 @@ def main(cfg: OmegaConf):
     # will use the same time.
     OmegaConf.resolve(cfg)
     cls = hydra.utils.get_class(cfg._target_)
-    workspace: BaseWorkspace = cls(cfg)
+    workspace = cls(cfg)
 
     print(f"==== workspace: {workspace.__class__.__name__} ====")
 
     # fetch policy model
     policy = workspace.get_model()
-    
+
     action_horizon = policy.horizon - policy.n_obs_steps + 1
     print(f"==== action_horizon: {action_horizon} ====")
-
 
     """
     run policy

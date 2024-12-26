@@ -164,6 +164,7 @@ class Inference:
         model_input["agent_pos"] = torch.from_numpy(state).unsqueeze(0).to(self.device)
 
         actions = policy(model_input)[0]
+        # actions = actions[3::2] # 间隔取 actions
         print(f"inference: {actions.shape}")
         return actions
 
@@ -174,7 +175,7 @@ class Inference:
         return actions["action"].detach().cpu().numpy()[0]
 
     def step_one(self, action):
-        print("step: ", action.shape)
+        # print("step: ", action.shape)
         self.robot.send_action(action)
 
     def get_obs_dict(self):

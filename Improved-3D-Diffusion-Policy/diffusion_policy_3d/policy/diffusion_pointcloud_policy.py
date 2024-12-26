@@ -35,7 +35,7 @@ class DiffusionPointcloudPolicy(BasePolicy):
         use_down_condition=True,
         use_mid_condition=True,
         use_up_condition=True,
-        use_pc_color=False,
+        use_pc_color=True,
         pointnet_type="pointnet",
         pointcloud_encoder_cfg=None,
         point_downsample=False,

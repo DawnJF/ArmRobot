@@ -22,7 +22,8 @@ class MultiStagePointNetEncoder(nn.Module):
 
         self.act = nn.LeakyReLU(negative_slope=0.0, inplace=False)
 
-        self.conv_in = nn.Conv1d(3, h_dim, kernel_size=1)
+        # Note: for point cloud colors, we use 6 channels
+        self.conv_in = nn.Conv1d(6, h_dim, kernel_size=1)
         self.layers, self.global_layers = nn.ModuleList(), nn.ModuleList()
         for i in range(self.num_layers):
             self.layers.append(nn.Conv1d(h_dim, h_dim, kernel_size=1))

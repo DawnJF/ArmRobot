@@ -146,7 +146,6 @@ class Inference:
             assert rgb_image.size == (960, 540)
             rgb_image = rgb_image.crop((230, 0, 960, 540))
 
-
             point_cloud = process_depth_image_offline(
                 np.array(rgb_image), np.array(depth_image)
             )
@@ -158,9 +157,7 @@ class Inference:
         state = np.stack(state_list)
 
         model_input = {}
-        model_input["point_cloud"] = (
-            torch.from_numpy(pc).unsqueeze(0).to(self.device)
-        )
+        model_input["point_cloud"] = torch.from_numpy(pc).unsqueeze(0).to(self.device)
         model_input["agent_pos"] = torch.from_numpy(state).unsqueeze(0).to(self.device)
 
         actions = policy(model_input)[0]
@@ -186,19 +183,20 @@ class Inference:
 
     def run(self, policy):
         step_count = 0
+        obs = self.get_obs_dict()
+        print(obs.keys())
+        self.obs_list.append(obs)
 
         while step_count < 1000:
             with torch.no_grad():
-
-                obs = self.get_obs_dict()
-                print(obs.keys())
-                self.obs_list.append(obs)
-
                 actions = self.inference_by_only_pc(policy, self.obs_list)
 
             for action in actions:
                 self.step_one(action)
                 time.sleep(0.1)
+
+                obs = self.get_obs_dict()
+                self.obs_list.append(obs)
                 step_count += 1
 
             print(f"step: {step_count}")

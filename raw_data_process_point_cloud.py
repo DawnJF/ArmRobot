@@ -75,7 +75,7 @@ def process(save_path, json_files, image_params):
 
 def run(data_path_list, save_path, image_params):
 
-    for data_path in data_path_list:
+    for data_path in tqdm(data_path_list):
         folders_name = os.listdir(data_path)
         json_files = [
             os.path.join(data_path, folder_name, "data.json")
@@ -128,17 +128,17 @@ def run_512():
     print("done")
 
 
-def run_240():
+def run_pc_only():
 
     data_path_list = [
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_random",
         "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
-        # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1219",
     ]
-    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/pc_crop_1224"
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/pc_crop_1224+26"
     run(data_path_list, save_path, None)
 
     print("done")
 
 
 if __name__ == "__main__":
-    run_240()
+    run_pc_only()

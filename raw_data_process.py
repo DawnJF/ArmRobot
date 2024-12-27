@@ -11,11 +11,6 @@ def read_json(json_file, data_dict, image_params):
     data_path = os.path.dirname(json_file)
 
     for item in data:
-        file = os.path.join(
-            data_path, item["point_cloud"].split(data_path.split("/")[-1] + "/")[1]
-        )
-        colored_cloud = np.load(file)
-        data_dict["colored_clouds"].append(colored_cloud)
 
         rgb_img_file = os.path.join(
             data_path, item["rgb"].split(data_path.split("/")[-1] + "/")[1]
@@ -42,7 +37,7 @@ def read_json(json_file, data_dict, image_params):
 
         data_dict["states"].append(item["pose"])
         data_dict["actions"].append(item["pose"])  # TODO
-    data_dict["episode_ends"].append(len(data_dict["colored_clouds"]))
+    data_dict["episode_ends"].append(len(data_dict["imgs"]))
 
 
 def process(save_path, json_files, image_params):
@@ -66,7 +61,7 @@ def process(save_path, json_files, image_params):
     for index, json_file in tqdm(enumerate(json_files)):
         read_json(json_file, data, image_params)
 
-    colored_clouds = np.array(colored_clouds).astype(np.float32)
+    # colored_clouds = np.array(colored_clouds).astype(np.float32)
     actions = np.array(actions).astype(np.float32)
     states = np.array(states).astype(np.float32)
 
@@ -75,12 +70,12 @@ def process(save_path, json_files, image_params):
 
     episode_ends = np.array(episode_ends).astype(np.int64)
 
-    print(colored_clouds.shape, actions.shape, states.shape, episode_ends)
+    print(actions.shape, states.shape, episode_ends)
     # exit()
     with zarr.open(save_path, mode="w") as zf:
         data_group = zf.create_group("data")
         data_group.create_dataset("action", data=actions, dtype="float32")
-        data_group.create_dataset("point_cloud", data=colored_clouds, dtype="float32")
+        # data_group.create_dataset("point_cloud", data=colored_clouds, dtype="float32")
         data_group.create_dataset("state", data=states, dtype="float32")
 
         # for 2d
@@ -166,8 +161,11 @@ def run_240():
         },
     }
 
-    data_path_list = ["/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224"]
-    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_1224"
+    data_path_list = [
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_random",
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
+    ]
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_random_1224+26"
     run(data_path_list, save_path, params)
 
     print("done")

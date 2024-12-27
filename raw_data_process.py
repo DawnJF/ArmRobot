@@ -10,10 +10,10 @@ def read_json(json_file, data_dict, image_params):
 
     data_path = os.path.dirname(json_file)
 
-    for item in data:
+    for item in tqdm(data):
 
         rgb_img_file = os.path.join(
-            data_path, item["rgb"].split(data_path.split("/")[-1] + "/")[1]
+            data_path, item["rgb"].split("/" + data_path.split("/")[-1] + "/")[1]
         )
         data_dict["imgs"].append(
             process_image_npy(np.load(rgb_img_file), "rgb", image_params)
@@ -162,10 +162,11 @@ def run_240():
     }
 
     data_path_list = [
-        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_random",
-        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
+        # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_random",
+        # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
+        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_bowl",
     ]
-    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_random_1224+26"
+    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_1226_bowl"
     run(data_path_list, save_path, params)
 
     print("done")

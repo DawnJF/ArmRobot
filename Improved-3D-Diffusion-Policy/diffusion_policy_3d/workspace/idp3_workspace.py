@@ -288,7 +288,6 @@ class iDP3Workspace(BaseWorkspace):
                     self.epoch % cfg.training.checkpoint_every
                 ) == 0 and cfg.checkpoint.save_ckpt:
                     # checkpointing
-                    self.save_checkpoint(tag=f"{self.epoch}")
                     if cfg.checkpoint.save_last_ckpt:
                         self.save_checkpoint()
                     if cfg.checkpoint.save_last_snapshot:

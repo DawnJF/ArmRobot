@@ -1,6 +1,7 @@
 from tqdm import tqdm
 import json, os, zarr
 import numpy as np
+import copy
 from observation.Image_process_utils import process_image_npy
 
 
@@ -11,6 +12,8 @@ def read_json(json_file, data_dict, image_params, key_map):
     data_path = os.path.dirname(json_file)
 
     for item in tqdm(data):
+    # for index in tqdm(range(len(data) - 1)):
+        # item = data[index]
         """
         跳过静止不动的数据
         """
@@ -20,6 +23,12 @@ def read_json(json_file, data_dict, image_params, key_map):
 
         data_dict["state"].append(item["pose"])
         data_dict["action"].append(item["pose"])  # TODO
+
+        # action = copy.deepcopy(data[index + 1]["pose"])
+        # action[0] = action[0] - item["pose"][0]
+        # action[1] = action[1] - item["pose"][1]
+        # action[2] = action[2] - item["pose"][2]
+        # data_dict["action"].append(action)
 
         if "img" in key_map:
             rgb_img_file = os.path.join(
@@ -152,7 +161,7 @@ def run_240():
         },
         "wrist": {
             "size": (640, 480),
-            "crop": (0, 0, 640, 480),
+            "crop": (80, 0, 560, 480),
             "resize": (240, 240),
         },
         "scene": {
@@ -172,11 +181,17 @@ def run_240():
     }
 
     data_path_list = [
-        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_random",
-        "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1224",
-        # "/storage/liujinxin/code/ArmRobot/dataset/raw_data/1226_bowl",
+        "/liujinxin/code/ArmRobot/dataset/raw_data/0109_open",
+        "/liujinxin/code/ArmRobot/dataset/raw_data/0109_take_all",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/BELL",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/KELE",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/MM",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/PERSIMMON",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/SHIP",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_take/SNAKE",
+        # "/ssdwork/liujinxin/DATASET/ARM_UR/RAW_DATA/0114_demo_open",
     ]
-    save_path = "/storage/liujinxin/code/ArmRobot/dataset/train_data/240_random_1224+26"
+    save_path = "/ssdwork/liujinxin/DATASET/ARM_UR/TRAIN_DATA/0109_open_take_diff"
     run(data_path_list, save_path, image_params, key_map)
 
     print("done")
